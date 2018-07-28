@@ -2,14 +2,6 @@
     'use strict';
 
     /**
-     * Объект представления
-     * @type {{object}}
-     */
-    var view = {
-
-    };
-
-    /**
      * Временные данные для объекта объявления
      * @type {{object}}
      */
@@ -35,7 +27,7 @@
         minLocX: 300,
         maxLocX: 900,
         minLocY: 100,
-        minLoc5: 100
+        maxLocY: 500
     };
 
     /**
@@ -53,38 +45,46 @@
         createAdds: function () {
 
             for (var i = 0; i < data.offerLength; i++) {
-                this.adds.push(this.generateAdd());
+                this.adds.push(this.generateAdd(i));
             }
+
+            controller.createPin(this.adds);
         },
 
         /**
          * Генерирует объект обяъвления
          * @method generateAdd
-         * @return [number]
+         * @param {number} i порядковый номер объекта в массиве
+         * @return [obj]
          */
-        generateAdd: function () {
-            return {
+        generateAdd: function (i) {
+            var locX = window.util.getRandomNumber(data.minLocX, data.maxLocX);
+            var locY = window.util.getRandomNumber(data.minLocY, data.maxLocY);
+            var checkTime = data.checkIns[window.util.getRandomNumber(0, data.checkIns.length - 1)];
+            var rooms = window.util.getRandomNumber(data.minRooms, data.maxRooms);
+            this.addItem = {
                 author: {
-                    avatar: 'img/avatars/users01.png'
+                    avatar: 'img/avatars/user' + window.util.convertNum(i + 1) +'.png'
                 },
                 offer: {
-                    title: '',
-                    address: '',
-                    price: '',
-                    type: '',
-                    rooms: '',
-                    guests: '',
-                    checkin: '',
-                    checkout: '',
-                    features: '',
+                    title: data.offerTitles[window.util.getRandomNumber(0, data.offerTitles.length - 1)],
+                    address: '' + locX + ', ' + locY + '',
+                    price: window.util.getRandomNumber(data.minPrice, data.maxPrice),
+                    type: data.types[window.util.getRandomNumber(0, data.types.length - 1)],
+                    rooms: rooms,
+                    guests: rooms * 2,
+                    checkin: checkTime,
+                    checkout: checkTime,
+                    features: window.util.arrayShuffler(data.features.slice(0, window.util.getRandomNumber(1, data.features.length))),
                     description: '',
                     photos: []
                 },
                 location: {
-                    x: '',
-                    y: ''
+                    x: locX,
+                    y: locY
                 }
-            }
+            };
+            return this.addItem;
         }
     };
 
@@ -94,6 +94,37 @@
      */
     var controller = {
 
+        /**
+         * @method createPins
+         * @param {array} adds Массив объявлений
+         */
+        createPins: function (adds) {
+            adds.forEach((function (item) {
+                view.drawPins(item);
+            }));
+        }
+    };
+
+    /**
+     * Объект представления
+     * @type {{object}}
+     */
+    var view = {
+
+        renderPin: function () {
+            var pin = document.createElement('div');
+            pin.className = 'pin';
+            pin.style.left = item.location.x + 'px';
+            pin.style.top = item.location.y + 'px';
+            pin.innerHTML = '<img src="' + item.author.avatar + '" class="round" width="40" height="40">';
+            return pin;
+        },
+
+        drawPins: function () {
+            var pinsWrapper = document.querySelector('.tokyo__pin-map');
+            var fragment = document.createDocumentFragment();
+            var fra
+        }
     };
 
     /**
