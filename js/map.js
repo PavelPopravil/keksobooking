@@ -48,7 +48,7 @@
                 this.adds.push(this.generateAdd(i));
             }
 
-            controller.createPin(this.adds);
+            controller.createPins();
         },
 
         /**
@@ -96,12 +96,9 @@
 
         /**
          * @method createPins
-         * @param {array} adds Массив объявлений
          */
-        createPins: function (adds) {
-            adds.forEach((function (item) {
-                view.drawPins(item);
-            }));
+        createPins: function () {
+            view.renderPins();
         }
     };
 
@@ -111,19 +108,31 @@
      */
     var view = {
 
-        renderPin: function () {
+        /**
+         * Генерирует разметку пина
+         * @param {obj} item Объект объявления
+         */
+        generatePin: function (item) {
             var pin = document.createElement('div');
-            pin.className = 'pin';
-            pin.style.left = item.location.x + 'px';
-            pin.style.top = item.location.y + 'px';
             pin.innerHTML = '<img src="' + item.author.avatar + '" class="round" width="40" height="40">';
+            pin.className = 'pin';
+            setTimeout(function () {
+                pin.style.left = (item.location.x - (pin.offsetWidth / 2)) + 'px';
+                pin.style.top = (item.location.y - pin.offsetHeight) + 'px';
+            }, 0); // without timeout offsetHeight is 0
             return pin;
         },
 
-        drawPins: function () {
+        /**
+         * Вставляет пины на карту
+         */
+        renderPins: function () {
             var pinsWrapper = document.querySelector('.tokyo__pin-map');
             var fragment = document.createDocumentFragment();
-            var fra
+            model.adds.forEach(function (item) {
+                fragment.append(view.generatePin(item));
+            });
+            pinsWrapper.append(fragment);
         }
     };
 
