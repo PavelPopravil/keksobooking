@@ -38,6 +38,12 @@
 
         adds: [],
 
+        offerTypeTranslation: {
+            flat: 'Квартира',
+            house: 'Дом',
+            bungalo: 'Бунгало'
+        },
+
         /**
          * Генерирует массив объявлений
          * @method createAdds
@@ -49,6 +55,7 @@
             }
 
             controller.createPins();
+            controller.createOffer();
         },
 
         /**
@@ -95,10 +102,29 @@
     var controller = {
 
         /**
+         * Инициализация переменных дом-дерева
+         */
+        initCfg: function () {
+            this.selector = {
+                block: document.querySelector('.tokyo')
+            };
+            this.selector.offerDialog = this.selector.block.querySelector('.dialog');
+            this.selector.offerAvatar = this.selector.offerDialog.querySelector('.dialog__title img');
+            this.selector.offerPanel = this.selector.offerDialog.querySelector('.dialog__panel');
+        },
+
+            /**
          * @method createPins
          */
         createPins: function () {
             view.renderPins();
+        },
+
+        /**
+         * @method createOffer
+         */
+        createOffer: function () {
+            view.generateOffer(model.adds[0], view.appendMainOffer);
         }
     };
 
@@ -107,6 +133,36 @@
      * @type {{object}}
      */
     var view = {
+
+        /**
+         * Генерирует разметку для объявления
+         * @param {obj} item Объект с данными объявления
+         * @param {func} cb callback
+         */
+        generateOffer: function (item, cb) {
+            var template = document.querySelector('#lodge-template').content.querySelector('.dialog__panel').cloneNode(true);
+            template.querySelector('.lodge__title').textContent = item.offer.title;
+            template.querySelector('.lodge__address').textContent = item.offer.address;
+            template.querySelector('.lodge__price').textContent = item.offer.price + ' руб/ночь';
+            template.querySelector('.lodge__type').textContent = model.offerTypeTranslation[item.offer.type];
+            template.querySelector('.lodge__rooms-and-guests').textContent = item.offer.guests + ' гостей  в ' + item.offer.rooms + ' комнатах';
+            template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + item.offer.checkin + ', Выезд до ' + item.offer.checkin;
+            item.offer.features.forEach(function (feature) {
+                template.querySelector('.lodge__features').innerHTML += '<span class="feature__image feature__image--' + feature + '"></span>'
+            });
+            template.querySelector('.lodge__description').textContent = item.offer.description;
+            controller.selector.offerAvatar.src = item.author.avatar;
+            if (cb !== undefined) {
+                cb(template);
+            }
+        },
+
+        /**
+         * Вставляет главрное объявление на страницу
+         */
+        appendMainOffer: function (template) {
+            controller.selector.offerDialog.replaceChild(template, controller.selector.offerPanel);
+        },
 
         /**
          * Генерирует разметку пина
@@ -142,6 +198,7 @@
      */
     var mapApp = {
         init: function () {
+            controller.initCfg();
             model.createAdds();
         }
     };
