@@ -56,6 +56,7 @@
 
             controller.createPins();
             controller.createOffer();
+            controller.setPinHanders();
         },
 
         /**
@@ -69,7 +70,7 @@
             var locY = window.util.getRandomNumber(data.minLocY, data.maxLocY);
             var checkTime = data.checkIns[window.util.getRandomNumber(0, data.checkIns.length - 1)];
             var rooms = window.util.getRandomNumber(data.minRooms, data.maxRooms);
-            this.addItem = {
+            return {
                 author: {
                     avatar: 'img/avatars/user' + window.util.convertNum(i + 1) +'.png'
                 },
@@ -89,9 +90,9 @@
                 location: {
                     x: locX,
                     y: locY
-                }
+                },
+                selector: {}
             };
-            return this.addItem;
         }
     };
 
@@ -125,6 +126,18 @@
          */
         createOffer: function () {
             view.generateOffer(model.adds[0], view.appendMainOffer);
+        },
+
+        /**
+         * Устанавливает обработчики событий для маркеров
+         */
+        setPinHanders: function () {
+            // this.selector.block.addEventListener('click', function (e) {
+            //     if (e.target.classList.contains('pin')) {
+            //         console.log(e.target);
+            //     }
+            // });
+            console.log(model);
         }
     };
 
@@ -176,6 +189,7 @@
                 pin.style.left = (item.location.x - (pin.offsetWidth / 2)) + 'px';
                 pin.style.top = (item.location.y - pin.offsetHeight) + 'px';
             }, 0); // without timeout offsetHeight is 0
+            item.selector.pin = pin;
             return pin;
         },
 
