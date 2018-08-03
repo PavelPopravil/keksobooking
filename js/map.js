@@ -55,7 +55,7 @@
             }
 
             controller.createPins();
-            controller.createOffer();
+            controller.showOffer(this.adds[0]);
             controller.setPinHanders();
         },
 
@@ -71,28 +71,45 @@
             var checkTime = data.checkIns[window.util.getRandomNumber(0, data.checkIns.length - 1)];
             var rooms = window.util.getRandomNumber(data.minRooms, data.maxRooms);
             return {
-                author: {
-                    avatar: 'img/avatars/user' + window.util.convertNum(i + 1) +'.png'
-                },
-                offer: {
-                    title: data.offerTitles[window.util.getRandomNumber(0, data.offerTitles.length - 1)],
-                    address: '' + locX + ', ' + locY + '',
-                    price: window.util.getRandomNumber(data.minPrice, data.maxPrice),
-                    type: data.types[window.util.getRandomNumber(0, data.types.length - 1)],
-                    rooms: rooms,
-                    guests: rooms * 2,
-                    checkin: checkTime,
-                    checkout: checkTime,
-                    features: window.util.arrayShuffler(data.features.slice(0, window.util.getRandomNumber(1, data.features.length))),
-                    description: '',
-                    photos: []
-                },
-                location: {
-                    x: locX,
-                    y: locY
+                data: {
+                    author: {
+                        avatar: 'img/avatars/user' + window.util.convertNum(i + 1) +'.png'
+                    },
+                    offer: {
+                        title: data.offerTitles[window.util.getRandomNumber(0, data.offerTitles.length - 1)],
+                        address: '' + locX + ', ' + locY + '',
+                        price: window.util.getRandomNumber(data.minPrice, data.maxPrice),
+                        type: data.types[window.util.getRandomNumber(0, data.types.length - 1)],
+                        rooms: rooms,
+                        guests: rooms * 2,
+                        checkin: checkTime,
+                        checkout: checkTime,
+                        features: window.util.arrayShuffler(data.features.slice(0, window.util.getRandomNumber(1, data.features.length))),
+                        description: '',
+                        photos: []
+                    },
+                    location: {
+                        x: locX,
+                        y: locY
+                    }
                 },
                 selector: {}
             };
+        },
+
+        /**
+         * Убирает активное состояния у всех маркеров
+         */
+        removePinsActiveState: function () {
+            this.adds.forEach(function (item) {
+                item.data.isActive = false;
+                item.selector.pin.classList.remove('pin--active');
+            });
+        },
+
+        setPinActiveState: function (item) {
+            item.selector.pin.classList.add('pin--active');
+            item.data.isActive = true;
         }
     };
 
@@ -111,10 +128,10 @@
             };
             this.selector.offerDialog = this.selector.block.querySelector('.dialog');
             this.selector.offerAvatar = this.selector.offerDialog.querySelector('.dialog__title img');
-            this.selector.offerPanel = this.selector.offerDialog.querySelector('.dialog__panel');
+            this.selector.dialogClose = this.selector.offerDialog.querySelector('.dialog__close');
         },
 
-            /**
+         /**
          * @method createPins
          */
         createPins: function () {
@@ -122,22 +139,29 @@
         },
 
         /**
-         * @method createOffer
+         * @method showOffer
          */
-        createOffer: function () {
-            view.generateOffer(model.adds[0], view.appendMainOffer);
+        showOffer: function (item) {
+            if (item.data.isActive) {
+                return false;
+            }
+            model.removePinsActiveState();
+            model.setPinActiveState(item);
+            view.generateOffer(item);
+            view.showOfferDialog();
         },
 
         /**
          * Устанавливает обработчики событий для маркеров
          */
         setPinHanders: function () {
-            // this.selector.block.addEventListener('click', function (e) {
-            //     if (e.target.classList.contains('pin')) {
-            //         console.log(e.target);
-            //     }
-            // });
-            console.log(model);
+            model.adds.forEach(function (item) {
+                item.selector.pin.addEventListener('click', function () {
+                    controller.showOffer(item);
+                });
+            });
+
+            this.selector.dialogClose.addEventListener('click', view.removeOfferDialog);
         }
     };
 
@@ -148,33 +172,42 @@
     var view = {
 
         /**
+         * Показывает окно с подробной инофрмацией об объявлении
+         */
+        showOfferDialog: function (item) {
+            controller.selector.offerDialog.classList.add('active');
+        },
+        
+        removeOfferDialog: function () {
+            controller.selector.offerDialog.classList.remove('active');
+        },
+
+        /**
          * Генерирует разметку для объявления
          * @param {obj} item Объект с данными объявления
-         * @param {func} cb callback
          */
-        generateOffer: function (item, cb) {
+        generateOffer: function (item) {
             var template = document.querySelector('#lodge-template').content.querySelector('.dialog__panel').cloneNode(true);
-            template.querySelector('.lodge__title').textContent = item.offer.title;
-            template.querySelector('.lodge__address').textContent = item.offer.address;
-            template.querySelector('.lodge__price').textContent = item.offer.price + ' руб/ночь';
-            template.querySelector('.lodge__type').textContent = model.offerTypeTranslation[item.offer.type];
-            template.querySelector('.lodge__rooms-and-guests').textContent = item.offer.guests + ' гостей  в ' + item.offer.rooms + ' комнатах';
-            template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + item.offer.checkin + ', Выезд до ' + item.offer.checkin;
-            item.offer.features.forEach(function (feature) {
+            template.querySelector('.lodge__title').textContent = item.data.offer.title;
+            template.querySelector('.lodge__address').textContent = item.data.offer.address;
+            template.querySelector('.lodge__price').textContent = item.data.offer.price + ' руб/ночь';
+            template.querySelector('.lodge__type').textContent = model.offerTypeTranslation[item.data.offer.type];
+            template.querySelector('.lodge__rooms-and-guests').textContent = item.data.offer.guests + ' гостей  в ' + item.data.offer.rooms + ' комнатах';
+            template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + item.data.offer.checkin + ', Выезд до ' + item.data.offer.checkin;
+            item.data.offer.features.forEach(function (feature) {
                 template.querySelector('.lodge__features').innerHTML += '<span class="feature__image feature__image--' + feature + '"></span>'
             });
-            template.querySelector('.lodge__description').textContent = item.offer.description;
-            controller.selector.offerAvatar.src = item.author.avatar;
-            if (cb !== undefined) {
-                cb(template);
-            }
+            template.querySelector('.lodge__description').textContent = item.data.offer.description;
+            controller.selector.offerAvatar.src = item.data.author.avatar;
+            this.appendMainOffer(template);
         },
 
         /**
          * Вставляет главрное объявление на страницу
          */
         appendMainOffer: function (template) {
-            controller.selector.offerDialog.replaceChild(template, controller.selector.offerPanel);
+            var currenItem =  controller.selector.offerDialog.querySelector('.dialog__panel');
+            controller.selector.offerDialog.replaceChild(template, currenItem);
         },
 
         /**
@@ -183,11 +216,11 @@
          */
         generatePin: function (item) {
             var pin = document.createElement('div');
-            pin.innerHTML = '<img src="' + item.author.avatar + '" class="round" width="40" height="40">';
+            pin.innerHTML = '<img src="' + item.data.author.avatar + '" class="round" width="40" height="40">';
             pin.className = 'pin';
             setTimeout(function () {
-                pin.style.left = (item.location.x - (pin.offsetWidth / 2)) + 'px';
-                pin.style.top = (item.location.y - pin.offsetHeight) + 'px';
+                pin.style.left = (item.data.location.x - (pin.offsetWidth / 2)) + 'px';
+                pin.style.top = (item.data.location.y - pin.offsetHeight) + 'px';
             }, 0); // without timeout offsetHeight is 0
             item.selector.pin = pin;
             return pin;

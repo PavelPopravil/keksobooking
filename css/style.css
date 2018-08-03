@@ -497,6 +497,7 @@ select option:hover {
 }
 
 .dialog {
+    display: none;
     position: absolute;
     top: 70px;
     left: 20px;
@@ -505,6 +506,9 @@ select option:hover {
     height: 510px;
 }
 
+.dialog.active {
+    display: block;
+}
 .dialog__title {
     position: relative;
 }
