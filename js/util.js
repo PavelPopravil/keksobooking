@@ -1,7 +1,50 @@
 !function () {
     'use strict';
 
+    var KeyCodes = {
+        ESC: 27,
+        ENT: 13
+    };
+
     window.util = {
+
+
+        findDelegateEl: function (el, cls) {
+            if (!el.className) {
+                return false;
+            }
+            while (el.className !== cls) {
+                el = el.parentNode;
+                // console.log(el);
+            }
+            return el;
+        },
+
+        /**
+         * Проверяет в фокусе ли элемент
+         * @param el {dom}
+         * @return {boolean}
+         */
+        isFocused: function (el) {
+            return document.activeElement === el;
+        },
+        /**
+         * Проверяет были ли нажата кнопка ENT
+         * @param {obj} e Объект события
+         * @return {boolean}
+         */
+        isEnterKey: function (e) {
+            return e.keyCode === KeyCodes.ENT;
+        },
+
+        /**
+         * Проверяет были ли нажата кнопка ESK
+         * @param {obj} e Объект события
+         * @return {boolean}
+         */
+        isEscKey: function (e) {
+            return e.keyCode === KeyCodes.ESC;
+        },
 
         /** Генерирует случайное число в указанном диапазоне, включая максимаььное число
          * @method getRandomNumber
@@ -12,6 +55,7 @@
         getRandomNumber: function (min, max) {
             return Math.floor(Math.random() * (max - min + 1) + min);
         },
+
         /**
          * Возвращает перетасованный массив https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
          * @param array

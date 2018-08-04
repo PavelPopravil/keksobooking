@@ -45,21 +45,6 @@
         },
 
         /**
-         * Генерирует массив объявлений
-         * @method createAdds
-         */
-        createAdds: function () {
-
-            for (var i = 0; i < data.offerLength; i++) {
-                this.adds.push(this.generateAdd(i));
-            }
-
-            controller.createPins();
-            controller.showOffer(this.adds[0]);
-            controller.setPinHanders();
-        },
-
-        /**
          * Генерирует объект обяъвления
          * @method generateAdd
          * @param {number} i порядковый номер объекта в массиве
@@ -92,9 +77,17 @@
                         x: locX,
                         y: locY
                     }
-                },
-                selector: {}
+                }
             };
+        },
+
+        /**
+         * Соотносит ноду маркера с объектом объявления
+         * @param {num} dataOffer
+         * @return {obj}
+         */
+        setPinDataObj: function (dataOffer) {
+            return this.adds[dataOffer]
         },
 
         /**
@@ -103,14 +96,34 @@
         removePinsActiveState: function () {
             this.adds.forEach(function (item) {
                 item.data.isActive = false;
-                item.selector.pin.classList.remove('pin--active');
+                // item.selector.pin.classList.remove('pin--active');
             });
         },
 
+        /**
+         * Добавляет активное состояние выбранному маркеру
+         * @param {obj} item Объект с данными объявления
+         */
         setPinActiveState: function (item) {
-            item.selector.pin.classList.add('pin--active');
+            // item.selector.pin.classList.add('pin--active');
             item.data.isActive = true;
+        },
+
+        /**
+         * Генерирует массив объявлений
+         * @method createAdds
+         */
+        createAdds: function () {
+
+            for (var i = 0; i < data.offerLength; i++) {
+                this.adds.push(this.generateAdd(i));
+            }
+
+            controller.createPins();
+            controller.showOffer(this.adds[0]);
+            controller.setPinHanders();
         }
+
     };
 
     /**
@@ -129,6 +142,8 @@
             this.selector.offerDialog = this.selector.block.querySelector('.dialog');
             this.selector.offerAvatar = this.selector.offerDialog.querySelector('.dialog__title img');
             this.selector.dialogClose = this.selector.offerDialog.querySelector('.dialog__close');
+            this.selector.pinsWrapper = this.selector.block.querySelector('.tokyo__pin-map');
+            this.selector.mainPin = this.selector.pinsWrapper.querySelector('.pin.pin__main');
         },
 
          /**
@@ -139,9 +154,12 @@
         },
 
         /**
+         * Показывает объявление
          * @method showOffer
+         * @param {obj} item Объект с данными объявления
          */
         showOffer: function (item) {
+            console.log(item);
             if (item.data.isActive) {
                 return false;
             }
@@ -155,13 +173,33 @@
          * Устанавливает обработчики событий для маркеров
          */
         setPinHanders: function () {
+
+            controller.selector.pinsWrapper.addEventListener('click', function (e) {
+                // var offerIndex = window.util.findDelegateEl(e.target, 'pin').dataset.offer;
+                // controller.showOffer( model.setPinDataObj(offerIndex));
+                var trg = e.target;
+                console.log(trg);
+                console.log(controller.selector.mainPin);
+                if (trg.isEqualNode(controller.selector.mainPin)) {
+                    return false;
+                }
+                console.log(window.util.findDelegateEl(trg, 'pin'));
+            });
+
             model.adds.forEach(function (item) {
-                item.selector.pin.addEventListener('click', function () {
-                    controller.showOffer(item);
-                });
+                // item.selector.pin.addEventListener('click', function () {
+                //     controller.showOffer(item);
+                // });
             });
 
             this.selector.dialogClose.addEventListener('click', view.removeOfferDialog);
+
+            document.addEventListener('keydown', function (e) {
+
+                if (document.activeElement.classList.contains('pin') && window.util.isEnterKey(e)) {
+                    // controller.showOffer(item);
+                }
+            })
         }
     };
 
@@ -173,6 +211,7 @@
 
         /**
          * Показывает окно с подробной инофрмацией об объявлении
+         * @param {obj} item Объект с данными объявления
          */
         showOfferDialog: function (item) {
             controller.selector.offerDialog.classList.add('active');
@@ -213,16 +252,17 @@
         /**
          * Генерирует разметку пина
          * @param {obj} item Объект объявления
+         * @param {num} i Порядковый номер объекта объявления
          */
-        generatePin: function (item) {
+        generatePin: function (item, i) {
             var pin = document.createElement('div');
             pin.innerHTML = '<img src="' + item.data.author.avatar + '" class="round" width="40" height="40">';
             pin.className = 'pin';
+            pin.dataset.offer = i;
             setTimeout(function () {
                 pin.style.left = (item.data.location.x - (pin.offsetWidth / 2)) + 'px';
                 pin.style.top = (item.data.location.y - pin.offsetHeight) + 'px';
             }, 0); // without timeout offsetHeight is 0
-            item.selector.pin = pin;
             return pin;
         },
 
@@ -230,12 +270,11 @@
          * Вставляет пины на карту
          */
         renderPins: function () {
-            var pinsWrapper = document.querySelector('.tokyo__pin-map');
             var fragment = document.createDocumentFragment();
-            model.adds.forEach(function (item) {
-                fragment.append(view.generatePin(item));
+            model.adds.forEach(function (item, i) {
+                fragment.append(view.generatePin(item, i));
             });
-            pinsWrapper.append(fragment);
+            controller.selector.pinsWrapper.append(fragment);
         }
     };
 
