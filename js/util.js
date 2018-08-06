@@ -8,16 +8,23 @@
 
     window.util = {
 
-
-        findDelegateEl: function (el, cls) {
+        /**
+         * Ищет и возвращает элемент по искомому классу через делегирование событий
+         * @param el e.target
+         * @param cls Искомый класс
+         * @param ctx Контекст
+         * @return {*} Элемент с искомым классом
+         */
+        findDelegateEl: function (el, cls, ctx) {
             if (!el.className) {
                 return false;
             }
-            while (el.className !== cls) {
+            while (el !== ctx) {
+                if (el.className === cls) {
+                    return el;
+                }
                 el = el.parentNode;
-                // console.log(el);
             }
-            return el;
         },
 
         /**

@@ -37,6 +37,7 @@
     var model = {
 
         adds: [],
+        data: {},
 
         offerTypeTranslation: {
             flat: 'Квартира',
@@ -94,19 +95,20 @@
          * Убирает активное состояния у всех маркеров
          */
         removePinsActiveState: function () {
-            this.adds.forEach(function (item) {
-                item.data.isActive = false;
-                // item.selector.pin.classList.remove('pin--active');
-            });
+            if (model.data.activePin) {
+                model.data.activePin.classList.remove('pin--active');
+            }
+            model.data.activePin = null;
         },
 
         /**
          * Добавляет активное состояние выбранному маркеру
          * @param {obj} item Объект с данными объявления
+         * @param {dom node} el
          */
-        setPinActiveState: function (item) {
-            // item.selector.pin.classList.add('pin--active');
-            item.data.isActive = true;
+        setPinActiveState: function (el) {
+            model.data.activePin = el;
+            el.classList.add('pin--active');
         },
 
         /**
@@ -114,13 +116,11 @@
          * @method createAdds
          */
         createAdds: function () {
-
             for (var i = 0; i < data.offerLength; i++) {
                 this.adds.push(this.generateAdd(i));
             }
-
             controller.createPins();
-            controller.showOffer(this.adds[0]);
+            controller.showOffer(this.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
             controller.setPinHanders();
         }
 
@@ -157,14 +157,11 @@
          * Показывает объявление
          * @method showOffer
          * @param {obj} item Объект с данными объявления
+         * @param {dom node} el
          */
-        showOffer: function (item) {
-            console.log(item);
-            if (item.data.isActive) {
-                return false;
-            }
+        showOffer: function (item, el) {
             model.removePinsActiveState();
-            model.setPinActiveState(item);
+            model.setPinActiveState(el);
             view.generateOffer(item);
             view.showOfferDialog();
         },
@@ -175,31 +172,32 @@
         setPinHanders: function () {
 
             controller.selector.pinsWrapper.addEventListener('click', function (e) {
-                // var offerIndex = window.util.findDelegateEl(e.target, 'pin').dataset.offer;
-                // controller.showOffer( model.setPinDataObj(offerIndex));
-                var trg = e.target;
-                console.log(trg);
-                console.log(controller.selector.mainPin);
-                if (trg.isEqualNode(controller.selector.mainPin)) {
-                    return false;
-                }
-                console.log(window.util.findDelegateEl(trg, 'pin'));
-            });
-
-            model.adds.forEach(function (item) {
-                // item.selector.pin.addEventListener('click', function () {
-                //     controller.showOffer(item);
-                // });
+                controller.showOfferDialogEvent(e, this);
             });
 
             this.selector.dialogClose.addEventListener('click', view.removeOfferDialog);
 
-            document.addEventListener('keydown', function (e) {
+            controller.selector.pinsWrapper.addEventListener('keydown', function (e) {
 
                 if (document.activeElement.classList.contains('pin') && window.util.isEnterKey(e)) {
-                    // controller.showOffer(item);
+                    controller.showOfferDialogEvent(e, this);
                 }
-            })
+            });
+
+            document.addEventListener('keydown', function (e) {
+
+                if ((window.util.isEscKey(e) && model.data.offerIsOpen) || window.util.isFocused(controller.selector.dialogClose) && window.util.isEnterKey(e)) {
+                    model.removePinsActiveState();
+                    view.removeOfferDialog();
+                }
+            });
+        },
+
+        showOfferDialogEvent: function (e, ctx) {
+            var pin = window.util.findDelegateEl(e.target, 'pin', ctx);
+            if (pin && model.data.activePin !== pin) {
+                controller.showOffer(model.setPinDataObj(pin.dataset.offer), pin);
+            }
         }
     };
 
@@ -214,10 +212,12 @@
          * @param {obj} item Объект с данными объявления
          */
         showOfferDialog: function (item) {
+            model.data.offerIsOpen = true;
             controller.selector.offerDialog.classList.add('active');
         },
         
         removeOfferDialog: function () {
+            model.data.offerIsOpen = false;
             controller.selector.offerDialog.classList.remove('active');
         },
 
@@ -259,6 +259,7 @@
             pin.innerHTML = '<img src="' + item.data.author.avatar + '" class="round" width="40" height="40">';
             pin.className = 'pin';
             pin.dataset.offer = i;
+            pin.setAttribute('tabindex', 0);
             setTimeout(function () {
                 pin.style.left = (item.data.location.x - (pin.offsetWidth / 2)) + 'px';
                 pin.style.top = (item.data.location.y - pin.offsetHeight) + 'px';
