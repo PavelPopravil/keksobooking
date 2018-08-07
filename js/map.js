@@ -45,6 +45,13 @@
             bungalo: 'Бунгало'
         },
 
+        importGlobalVars: function () {
+            window.mapData = {
+                minPrice: data.minPrice,
+                maxPrice: data.maxPrice
+            }
+        },
+
         /**
          * Генерирует объект обяъвления
          * @method generateAdd
@@ -119,11 +126,11 @@
             for (var i = 0; i < data.offerLength; i++) {
                 this.adds.push(this.generateAdd(i));
             }
+            this.importGlobalVars();
             controller.createPins();
             controller.showOffer(this.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
             controller.setPinHanders();
         }
-
     };
 
     /**
