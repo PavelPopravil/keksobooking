@@ -3,6 +3,35 @@
 
     var formApp = {
 
+        costMap: {
+            'shanty': 0,
+            'flat': 1000,
+            'palace': 10000
+        },
+
+        initDepency: function (inp, depInp, map) {
+            var app = this;
+            inp.addEventListener('change', function () {
+                if (map !== undefined) {
+                    depInp.value = map[this.value];
+                } else {
+                    depInp.value = this.value;
+                }
+            });
+        },
+
+        fieldsDependencies: function () {
+            var type = document.querySelector('#type');
+            var price = document.querySelector('#price');
+            var roomNumber = document.querySelector('#room_number');
+            var capracity = document.querySelector('#capacity');
+            var time = document.querySelector('#time');
+            var timeout = document.querySelector('#timeout');
+            this.initDepency(type, price, this.costMap);
+            this.initDepency(roomNumber, capracity);
+            this.initDepency(time, timeout);
+        },
+
         numberValid: function (value) {
             return /^\d*$/.test(value)
         },
@@ -20,25 +49,17 @@
             this.toggleInputState(inp.selector);
             inp.selector.addEventListener('input', function () {
                 var trg = this;
-                var minLength = inp.minLength || 30;
-                var maxLength = inp.maxLength || 100;
-                var valueLength = trg.value.length;
 
-                if (!valueLength) {
-                    trg.setCustomValidity('Заполните поле')
-                } else if (valueLength < minLength) {
-                    trg.setCustomValidity('Должно быть не менее ' + minLength + ' символа, Сейчас: ' + valueLength + '')
-                } else if (valueLength > maxLength) {
-                    trg.setCustomValidity('Должно быть не более ' + maxLength + ' символа, Сейчас: ' + valueLength + '')
-                } else {
-                    trg.setCustomValidity(' ')
-                }
                 if (trg.getAttribute('type') === 'nubmer') {
                     app.numberValid()
                 }
 
                 app.toggleInputState(trg);
             });
+        },
+
+        resetForm: function (e) {
+            this.reset();
         },
 
         setFormHandlers:function () {
@@ -49,6 +70,7 @@
                     app.validateInput(item)
                 });
             });
+            this.form.addEventListener('submit', app.resetForm);
         },
 
         initCfg: function () {
@@ -66,7 +88,6 @@
                     minLength: window.mapData.minPrice
                 }
             ];
-            this._data = {};
         },
 
         init: function () {
@@ -77,6 +98,7 @@
             }
             this.initCfg();
             this.setFormHandlers();
+            this.fieldsDependencies();
         }
     };
 
