@@ -32,14 +32,21 @@
 
     var dataApp = {
 
+        offerTypeTranslation: {
+            flat: 'Квартира',
+            house: 'Дом',
+            bungalo: 'Бунгало'
+        },
+
         adds: [],
 
         /**
          * Импортирует данные об объявлениях в глобальную область видимости
          */
-        importToGlobal: function () {
+        exportToGlobal: function () {
             window.mapApp = {};
             window.mapApp.adds = window.mapApp.adds || this.adds;
+            window.mapApp.offerTypeTranslation = window.mapApp.offerTypeTranslation || this.offerTypeTranslation;
         },
 
         /**
@@ -87,10 +94,7 @@
             for (var i = 0; i < data.offerLength; i++) {
                 this.adds.push(this.generateAdd(i));
             }
-            this.importToGlobal();
-            // controller.createPins();
-            // controller.showOffer(this.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
-            // controller.setPinHanders();
+            this.exportToGlobal();
         },
 
         /**
