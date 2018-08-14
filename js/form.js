@@ -78,14 +78,10 @@
             this.submitBtn = this.form.querySelector('.form__submit');
             this.inputs = [
                 {
-                    selector: document.querySelector('#title'),
-                    maxLength: 100,
-                    minLength: 30
+                    selector: document.querySelector('#title')
                 },
                 {
-                    selector: document.querySelector('#price'),
-                    maxLength: window.mapData.maxPrice,
-                    minLength: window.mapData.minPrice
+                    selector: document.querySelector('#price')
                 }
             ];
         },
