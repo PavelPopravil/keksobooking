@@ -5,15 +5,8 @@
 
         exportToGlobal: function () {
             window.mapApp.removePinsActiveState =  window.mapApp.removePinsActiveState || this.removePinsActiveState;
-        },
-
-        /**
-         * Соотносит ноду маркера с объектом объявления
-         * @param {num} dataOffer
-         * @return {obj}
-         */
-        setPinDataObj: function (dataOffer) {
-            return window.mapApp.adds[dataOffer]
+            window.mapApp.setPinActiveState =  window.mapApp.setPinActiveState || this.setPinActiveState;
+            window.mapApp.renderPins =  window.mapApp.renderPins || this.renderPins;
         },
 
         /**
@@ -37,61 +30,22 @@
         /**
          * Вставляет пины на карту
          */
-        renderPins: function () {
-            var app = this;
+        renderPins: function (data, wrap) {
             var fragment = document.createDocumentFragment();
-            window.mapApp.adds.forEach(function (item, i) {
-                fragment.append(app.generatePin(item, i));
+            data.forEach(function (item, i) {
+                fragment.append(pinApp.generatePin(item, i));
             });
-            this.selector.pinsWrapper.append(fragment);
+            wrap.append(fragment);
         },
 
-        /**
-         * Устанавливает обработчики событий для маркеров
-         */
-        setPinHanders: function () {
-            var app = this;
-
-            this.selector.pinsWrapper.addEventListener('click', function (e) {
-                app.handlePinEvent(e, this);
-            });
-
-            this.selector.pinsWrapper.addEventListener('keydown', function (e) {
-
-                if (document.activeElement.classList.contains('pin') && window.util.isEnterKey(e)) {
-                    app.handlePinEvent(e, this);
-                }
-            });
-        },
-
-        handlePinEvent: function (e, ctx) {
-            var pin = window.util.findDelegateEl(e.target, 'pin', ctx);
-            if (pin && pinApp.data.activePin !== pin) {
-                pinApp.showOffer(pinApp.setPinDataObj(pin.dataset.offer), pin);
-            }
-        },
-
-        /**
-         * Показывает объявление
-         * @method showOffer
-         * @param {obj} item Объект с данными объявления
-         * @param {dom node} el
-         */
-        showOffer: function (item, el) {
-            this.removePinsActiveState();
-            this.setPinActiveState(el);
-            window.mapApp.generateOffer(item);
-            window.mapApp.showOfferDialog();
-        },
-        
         /**
          * Убирает активное состояния у всех маркеров
          */
         removePinsActiveState: function () {
-            if (pinApp.data.activePin) {
-                pinApp.data.activePin.classList.remove('pin--active');
+            if (window.mapApp.states.activePin) {
+                window.mapApp.states.activePin.classList.remove('pin--active');
             }
-            pinApp.data.activePin = null;
+            window.mapApp.states.activePin = null;
         },
 
         /**
@@ -99,24 +53,11 @@
          * @param {dom node} el
          */
         setPinActiveState: function (el) {
-            this.data.activePin = el;
+            window.mapApp.states.activePin = el;
             el.classList.add('pin--active');
         },
 
         init: function () {
-            this.selector = {};
-            this.selector.block = document.querySelector('.tokyo');
-            if (!this.selector.block) {
-                return false
-            }
-            this.data = {
-                activePin: null
-            };
-            this.selector.pinsWrapper = this.selector.block.querySelector('.tokyo__pin-map');
-            this.selector.mainPin = this.selector.pinsWrapper.querySelector('.pin.pin__main');
-            this.renderPins();
-            this.showOffer(window.mapApp.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
-            this.setPinHanders();
             this.exportToGlobal();
         }
     };

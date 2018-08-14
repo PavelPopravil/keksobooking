@@ -14,13 +14,13 @@
          * @param {obj} item Объект с данными объявления
          */
         showOfferDialog: function (item) {
-            cardApp.data.offerIsOpen = true;
-            cardApp.selector.block.classList.add('active');
+            window.mapApp.states.offerIsOpen = true;
+            window.mapApp.selector.dialog.classList.add('active');
         },
 
         removeOfferDialog: function () {
-            cardApp.data.offerIsOpen = false;
-            cardApp.selector.block.classList.remove('active');
+            window.mapApp.states.offerIsOpen = false;
+            window.mapApp.selector.dialog.classList.remove('active');
         },
 
         /**
@@ -39,7 +39,7 @@
                 template.querySelector('.lodge__features').innerHTML += '<span class="feature__image feature__image--' + feature + '"></span>'
             });
             template.querySelector('.lodge__description').textContent = item.data.offer.description;
-            cardApp.selector.offerAvatar.src = item.data.author.avatar;
+            window.mapApp.selector.offerAvatar.src = item.data.author.avatar;
             cardApp.appendMainOffer(template);
         },
 
@@ -47,35 +47,11 @@
          * Вставляет главрное объявление на страницу
          */
         appendMainOffer: function (template) {
-            var currenItem =  this.selector.block.querySelector('.dialog__panel');
-            this.selector.block.replaceChild(template, currenItem);
-        },
-
-        setCardHandlers: function () {
-            var app = this;
-            document.addEventListener('keydown', function (e) {
-
-                if ((window.util.isEscKey(e) && app.data.offerIsOpen) || window.util.isFocused(app.selector.dialogClose) && window.util.isEnterKey(e)) {
-                    window.mapApp.removePinsActiveState();
-                    app.removeOfferDialog();
-                }
-            });
-
-            this.selector.dialogClose.addEventListener('click', app.removeOfferDialog);
+            var currenItem =  window.mapApp.selector.dialog.querySelector('.dialog__panel');
+            window.mapApp.selector.dialog.replaceChild(template, currenItem);
         },
 
         init: function () {
-            this.selector = {};
-            this.selector.block = document.querySelector('.dialog');
-            if (!this.selector.block) {
-                return false;
-            }
-            this.selector.offerAvatar = this.selector.block.querySelector('.dialog__title img');
-            this.selector.dialogClose = this.selector.block.querySelector('.dialog__close');
-            this.data = {
-                offerIsOpen: false
-            };
-            this.setCardHandlers();
             this.exportToGlobal();
         }
     };
