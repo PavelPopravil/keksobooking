@@ -1,12 +1,26 @@
 !function() {
     'use strict';
 
+    var address = document.querySelector('#address');
+
     var formApp = {
 
         costMap: {
             'shanty': 0,
             'flat': 1000,
             'palace': 10000
+        },
+
+        exportToGlobal: function () {
+            window.mapApp.updateAddress = window.mapApp.updateAddress || this.updateAddress;
+        },
+
+        updateAddress: function (coords, el) {
+            var picCoords =  {
+                x: parseInt(coords.x + (el.offsetWidth / 2)),
+                y: parseInt(coords.y + el.offsetHeight)
+            };
+            address.value = 'x: ' + picCoords.x + ', y: ' + picCoords.y + '';
         },
 
         initDepency: function (inp, depInp, map) {
@@ -95,6 +109,7 @@
             this.initCfg();
             this.setFormHandlers();
             this.fieldsDependencies();
+            this.exportToGlobal();
         }
     };
 

@@ -61,7 +61,7 @@
 
             this.selector.dialogClose.addEventListener('click', window.mapApp.removeOfferDialog);
 
-            window.mapApp.dragInit(this.selector.mainPin, this.selector.block);
+            window.mapApp.dragInit(this.selector.mainPin, this.selector.block, window.mapApp.updateAddress);
         },
 
         initCfg: function () {
