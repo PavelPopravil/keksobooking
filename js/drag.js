@@ -11,6 +11,9 @@
             y: e.pageY
         };
         this.selector.block.style.position = 'absolute';
+        this.selector.block.style.zIndex = 999;
+
+        console.log(this.data.limits);
 
         function onMouseMove(moveEvt) {
             moveEvt.preventDefault();
@@ -25,18 +28,31 @@
                 y: moveEvt.pageY
             };
 
-            app.selector.block.style.top = (app.selector.block.offsetTop - shift.y) + 'px';
-            app.selector.block.style.left = (app.selector.block.offsetLeft - shift.x) + 'px';
-
             app.data.endCoords = {
                 x: app.selector.block.offsetLeft - shift.x,
                 y: app.selector.block.offsetTop - shift.y
             };
 
+            if (app.data.endCoords.y < app.data.limits.top) {
+                app.data.endCoords.y = app.data.limits.top
+            } else if (app.data.endCoords.y > app.data.limits.bottom) {
+                app.data.endCoords.y = app.data.limits.bottom
+            }
+
+            if (app.data.endCoords.x < app.data.limits.left) {
+                app.data.endCoords.x = app.data.limits.left
+            } else if (app.data.endCoords.x > app.data.limits.right) {
+                app.data.endCoords.x = app.data.limits.right
+            }
+
+            app.selector.block.style.top = app.data.endCoords.y + 'px';
+            app.selector.block.style.left = app.data.endCoords.x + 'px';
+
             app.cb(app.data.endCoords, app.selector.block);
         }
 
-        function onMouseUp() {
+        function onMouseUp(upEvt) {
+            upEvt.preventDefault();
             app.data.touch = false;
             app.selector.area.removeEventListener('mousemove', onMouseMove);
             app.selector.area.removeEventListener('mouseup', onMouseUp);
@@ -60,7 +76,13 @@
             area: area || document
         };
         this.data = {
-            touch: false
+            touch: false,
+            limits: {
+                top: 0,
+                left: 0,
+                right: this.selector.area.offsetWidth - this.selector.block.offsetWidth,
+                bottom: this.selector.area.offsetHeight - this.selector.block.offsetHeight
+            }
         };
 
         this.setHandlers();

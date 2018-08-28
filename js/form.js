@@ -18,7 +18,7 @@
         updateAddress: function (coords, el) {
             var picCoords =  {
                 x: parseInt(coords.x + (el.offsetWidth / 2)),
-                y: parseInt(coords.y + el.offsetHeight)
+                y: parseInt(coords.y - el.offsetHeight)
             };
             address.value = 'x: ' + picCoords.x + ', y: ' + picCoords.y + '';
         },
