@@ -34,6 +34,10 @@
             });
         },
 
+        // syncValue: function () {
+        //
+        // },
+
         fieldsDependencies: function () {
             var type = document.querySelector('#type');
             var price = document.querySelector('#price');
@@ -41,6 +45,7 @@
             var capracity = document.querySelector('#capacity');
             var time = document.querySelector('#time');
             var timeout = document.querySelector('#timeout');
+            // window.mapApp.syncFields(type, price, ['shanty', 'flat', 'palace'], [0, 1000, 10000]);
             this.initDepency(type, price, this.costMap);
             this.initDepency(roomNumber, capracity);
             this.initDepency(time, timeout);
