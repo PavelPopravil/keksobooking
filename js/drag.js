@@ -13,8 +13,6 @@
         this.selector.block.style.position = 'absolute';
         this.selector.block.style.zIndex = 999;
 
-        console.log(this.data.limits);
-
         function onMouseMove(moveEvt) {
             moveEvt.preventDefault();
 

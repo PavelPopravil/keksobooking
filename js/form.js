@@ -5,11 +5,9 @@
 
     var formApp = {
 
-        costMap: {
-            'shanty': 0,
-            'flat': 1000,
-            'palace': 10000
-        },
+        prices: [1000, 0, 10000],
+
+        flats: ['flat', 'shanty', 'palace'],
 
         exportToGlobal: function () {
             window.mapApp.updateAddress = window.mapApp.updateAddress || this.updateAddress;
@@ -23,20 +21,9 @@
             address.value = 'x: ' + picCoords.x + ', y: ' + picCoords.y + '';
         },
 
-        initDepency: function (inp, depInp, map) {
-            var app = this;
-            inp.addEventListener('change', function () {
-                if (map !== undefined) {
-                    depInp.value = map[this.value];
-                } else {
-                    depInp.value = this.value;
-                }
-            });
+        syncValue: function (el, value) {
+            el.value = value;
         },
-
-        // syncValue: function () {
-        //
-        // },
 
         fieldsDependencies: function () {
             var type = document.querySelector('#type');
@@ -45,10 +32,12 @@
             var capracity = document.querySelector('#capacity');
             var time = document.querySelector('#time');
             var timeout = document.querySelector('#timeout');
-            // window.mapApp.syncFields(type, price, ['shanty', 'flat', 'palace'], [0, 1000, 10000]);
-            this.initDepency(type, price, this.costMap);
-            this.initDepency(roomNumber, capracity);
-            this.initDepency(time, timeout);
+
+            window.mapApp.syncFields(time, timeout, window.mapApp.data.checkIns, window.mapApp.data.checkIns, this.syncValue);
+            window.mapApp.syncFields(timeout, time, window.mapApp.data.checkIns, window.mapApp.data.checkIns, this.syncValue);
+            window.mapApp.syncFields(type, price, this.flats, this.prices, this.syncValue);
+            window.mapApp.syncFields(roomNumber, capracity, ['none-guest', 'for-guest', 'for-guest'], ['none-guest', 'for-guest'], this.syncValue);
+            window.mapApp.syncFields(capracity, roomNumber, ['none-guest', 'for-guest'], ['none-guest', 'for-guest', 'for-guest'], this.syncValue);
         },
 
         numberValid: function (value) {

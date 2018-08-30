@@ -47,6 +47,10 @@
             window.mapApp = {};
             window.mapApp.adds = window.mapApp.adds || this.adds;
             window.mapApp.offerTypeTranslation = window.mapApp.offerTypeTranslation || this.offerTypeTranslation;
+            window.mapApp.data = {
+                flatTypes: data.types,
+                checkIns: data.checkIns
+            }
         },
 
         /**

@@ -1,22 +1,25 @@
 !function () {
     'use strict';
 
-    function syncFields(el, el2, data1, data2, cb) {
+    function syncFields(el, el2, data, data2, cb) {
 
-        syncFieldsHandler(arguments);
-        // el2.value = el.value;
+        syncFieldsHandler(el, el2, data, data2, cb);
 
         el.addEventListener('change', function () {
-            syncFieldsHandler(arguments);
+            syncFieldsHandler(el, el2, data, data2, cb);
         });
     }
 
-    function syncFieldsHandler() {
-
-        if (cb === 'function') {
-            cb();
+    function syncFieldsHandler(el, el2, data, data2, cb) {
+        var index = data.indexOf(el.value);
+        if (typeof cb === 'function') {
+            console.log(data2);
+            cb(el2, data2[index]);
         }
     }
 
-    window.mapApp.syncFields = window.mapApp.syncFields || syncFields;
+    document.addEventListener('DOMContentLoaded', function () {
+        window.mapApp.syncFields = window.mapApp.syncFields || syncFields;
+    });
+
 }();
