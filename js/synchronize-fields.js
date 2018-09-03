@@ -13,7 +13,6 @@
     function syncFieldsHandler(el, el2, data, data2, cb) {
         var index = data.indexOf(el.value);
         if (typeof cb === 'function') {
-            console.log(data2);
             cb(el2, data2[index]);
         }
     }
