@@ -44,7 +44,6 @@
          * Импортирует данные об объявлениях в глобальную область видимости
          */
         exportToGlobal: function () {
-            window.mapApp = {};
             window.mapApp.adds = window.mapApp.adds || this.adds;
             window.mapApp.offerTypeTranslation = window.mapApp.offerTypeTranslation || this.offerTypeTranslation;
             window.mapApp.data = {
@@ -94,18 +93,23 @@
          * Генерирует массив объявлений
          * @method createAdds
          */
-        createAdds: function () {
-            for (var i = 0; i < data.offerLength; i++) {
-                this.adds.push(this.generateAdd(i));
-            }
-            this.exportToGlobal();
+        createAdds: function (data) {
+            console.log(data);
+            this.adds = data;
+            // for (var i = 0; i < data.offerLength; i++) {
+            //     this.adds.push(this.generateAdd(i));
+            // }
+
         },
 
         /**
          * Инициализация объекта, отвечающего за создание данных
          */
         init: function () {
-            this.createAdds();
+            // console.log(window.mapApp);
+            window.mapApp.load('GET', 'https://js.dump.academy/keksobooking/data', this.createAdds);
+            this.exportToGlobal();
+            // this.createAdds();
         }
     };
 
