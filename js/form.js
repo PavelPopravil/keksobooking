@@ -95,19 +95,16 @@
         },
 
         init: function () {
-            var app = this;
-            this.form = document.querySelector('.notice__form');
-            if (!this.form) {
+            formApp.form = document.querySelector('.notice__form');
+            if (!formApp.form) {
                 return false;
             }
-            this.initCfg();
-            this.setFormHandlers();
-            this.fieldsDependencies();
-            this.exportToGlobal();
+            formApp.initCfg();
+            formApp.setFormHandlers();
+            formApp.fieldsDependencies();
+            formApp.exportToGlobal();
         }
     };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        formApp.init();
-    });
+    window.mapApp.initForm = window.mapApp.initForm || formApp.init;
 }();

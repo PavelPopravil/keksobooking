@@ -46,7 +46,10 @@
             app.selector.block.style.top = app.data.endCoords.y + 'px';
             app.selector.block.style.left = app.data.endCoords.x + 'px';
 
-            app.cb(app.data.endCoords, app.selector.block);
+            console.log(app.cb);
+            if (app.cb !== undefined) {
+                app.cb(app.data.endCoords, app.selector.block);
+            }
         }
 
         function onMouseUp(upEvt) {
@@ -96,8 +99,5 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        window.mapApp.dragInit = window.mapApp.dragInit || dragApp;
-    });
-
+    window.mapApp.dragInit = window.mapApp.dragInit || dragApp;
 }();

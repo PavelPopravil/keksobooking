@@ -29,17 +29,17 @@
          */
         generateOffer: function (item) {
             var template = document.querySelector('#lodge-template').content.querySelector('.dialog__panel').cloneNode(true);
-            template.querySelector('.lodge__title').textContent = item.data.offer.title;
-            template.querySelector('.lodge__address').textContent = item.data.offer.address;
-            template.querySelector('.lodge__price').textContent = item.data.offer.price + ' руб/ночь';
-            template.querySelector('.lodge__type').textContent = window.mapApp.offerTypeTranslation[item.data.offer.type];
-            template.querySelector('.lodge__rooms-and-guests').textContent = item.data.offer.guests + ' гостей  в ' + item.data.offer.rooms + ' комнатах';
-            template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + item.data.offer.checkin + ', Выезд до ' + item.data.offer.checkin;
-            item.data.offer.features.forEach(function (feature) {
+            template.querySelector('.lodge__title').textContent = item.offer.title;
+            template.querySelector('.lodge__address').textContent = item.offer.address;
+            template.querySelector('.lodge__price').textContent = item.offer.price + ' руб/ночь';
+            template.querySelector('.lodge__type').textContent = window.mapApp.offerTypeTranslation[item.offer.type];
+            template.querySelector('.lodge__rooms-and-guests').textContent = item.offer.guests + ' гостей  в ' + item.offer.rooms + ' комнатах';
+            template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + item.offer.checkin + ', Выезд до ' + item.offer.checkin;
+            item.offer.features.forEach(function (feature) {
                 template.querySelector('.lodge__features').innerHTML += '<span class="feature__image feature__image--' + feature + '"></span>'
             });
-            template.querySelector('.lodge__description').textContent = item.data.offer.description;
-            window.mapApp.selector.offerAvatar.src = item.data.author.avatar;
+            template.querySelector('.lodge__description').textContent = item.offer.description;
+            window.mapApp.selector.offerAvatar.src = item.author.avatar;
             cardApp.appendMainOffer(template);
         },
 
@@ -56,7 +56,5 @@
         }
     };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        cardApp.init();
-    });
+    cardApp.init();
 }();

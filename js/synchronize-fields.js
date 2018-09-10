@@ -17,8 +17,5 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        window.mapApp.syncFields = window.mapApp.syncFields || syncFields;
-    });
-
+    window.mapApp.syncFields = window.mapApp.syncFields || syncFields;
 }();

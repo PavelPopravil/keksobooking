@@ -78,20 +78,18 @@
         },
 
         init: function () {
-            this.selector = {};
-            this.selector.block = document.querySelector('.tokyo');
-            if (!this.selector.block) {
+            mapApp.selector = {};
+            mapApp.selector.block = document.querySelector('.tokyo');
+            if (!mapApp.selector.block) {
                 return false
             }
-            this.initCfg();
-            this.exportToGlobal();
+            mapApp.initCfg();
+            mapApp.exportToGlobal();
             window.mapApp.renderPins(window.mapApp.adds, mapApp.selector.pinsWrapper);
-            this.showOffer(window.mapApp.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
-            this.setMapHandlers();
+            mapApp.showOffer(window.mapApp.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
+            mapApp.setMapHandlers();
         }
     };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        mapApp.init();
-    });
+    window.mapApp.initMap = window.mapApp.initMap || mapApp.init;
 }();

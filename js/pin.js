@@ -4,7 +4,7 @@
     var pinApp = {
 
         exportToGlobal: function () {
-            window.mapApp.removePinsActiveState =  window.mapApp.removePinsActiveState || this.removePinsActiveState;
+            window.mapApp.removePinsActiveState = window.mapApp.removePinsActiveState || this.removePinsActiveState;
             window.mapApp.setPinActiveState =  window.mapApp.setPinActiveState || this.setPinActiveState;
             window.mapApp.renderPins =  window.mapApp.renderPins || this.renderPins;
         },
@@ -16,13 +16,13 @@
          */
         generatePin: function (item, i) {
             var pin = document.createElement('div');
-            pin.innerHTML = '<img src="' + item.data.author.avatar + '" class="round" width="40" height="40">';
+            pin.innerHTML = '<img src="' + item.author.avatar + '" class="round" width="40" height="40">';
             pin.className = 'pin';
             pin.dataset.offer = i;
             pin.setAttribute('tabindex', 0);
             setTimeout(function () {
-                pin.style.left = (item.data.location.x - (pin.offsetWidth / 2)) + 'px';
-                pin.style.top = (item.data.location.y - pin.offsetHeight) + 'px';
+                pin.style.left = (item.location.x - (pin.offsetWidth / 2)) + 'px';
+                pin.style.top = (item.location.y - pin.offsetHeight) + 'px';
             }, 0); // without timeout offsetHeight is 0
             return pin;
         },

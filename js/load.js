@@ -4,6 +4,7 @@
     function load(method, url, onLoad, onError) {
 
         var xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
         xhr.open(method, url);
 
         xhr.addEventListener('error', function () {
@@ -11,18 +12,14 @@
         });
 
         xhr.addEventListener('load', function () {
-            // console.log(xhr.status);
-            if (onLoad !== undefined) {
+            if (onLoad !== undefined && xhr.status === 200) {
                 onLoad(xhr.response);
             }
-
         });
 
         xhr.send();
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        window.mapApp = {};
-        window.mapApp.load = window.mapApp.load || load;
-    });
+    window.mapApp = {};
+    window.mapApp.load = window.mapApp.load || load;
 }();
