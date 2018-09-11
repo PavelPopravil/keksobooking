@@ -46,7 +46,6 @@
             app.selector.block.style.top = app.data.endCoords.y + 'px';
             app.selector.block.style.left = app.data.endCoords.x + 'px';
 
-            console.log(app.cb);
             if (app.cb !== undefined) {
                 app.cb(app.data.endCoords, app.selector.block);
             }

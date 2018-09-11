@@ -45,7 +45,7 @@
          * Инициализация объекта, отвечающего за создание данных
          */
         init: function () {
-            window.mapApp.load('GET', 'https://js.dump.academy/keksobooking/data', this.createAdds);
+            window.mapApp.load('GET', 'https://js.dump.academy/keksobooking/data', this.createAdds, window.mapApp.showStatus);
         }
     };
 
