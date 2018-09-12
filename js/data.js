@@ -23,6 +23,7 @@
          */
         exportToGlobal: function () {
             window.mapApp.adds = window.mapApp.adds || this.adds;
+            window.mapApp.filterAdds = window.mapApp.filterAdds || this.adds;
             window.mapApp.offerTypeTranslation = window.mapApp.offerTypeTranslation || this.offerTypeTranslation;
             window.mapApp.data = {
                 flatTypes: data.types,

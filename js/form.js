@@ -6,7 +6,6 @@
     var formApp = {
 
         prices: [1000, 0, 10000],
-
         flats: ['flat', 'shanty', 'palace'],
 
         exportToGlobal: function () {

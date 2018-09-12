@@ -88,6 +88,7 @@
             window.mapApp.renderPins(window.mapApp.adds, mapApp.selector.pinsWrapper);
             mapApp.showOffer(window.mapApp.adds[0], document.querySelector('[data-offer="' + 0 + '"]'));
             mapApp.setMapHandlers();
+            window.mapApp.initFilter();
         }
     };
 
