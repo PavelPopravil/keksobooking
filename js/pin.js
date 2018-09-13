@@ -7,18 +7,18 @@
             window.mapApp.removePinsActiveState = window.mapApp.removePinsActiveState || this.removePinsActiveState;
             window.mapApp.setPinActiveState =  window.mapApp.setPinActiveState || this.setPinActiveState;
             window.mapApp.renderPins =  window.mapApp.renderPins || this.renderPins;
+            window.mapApp.clearPins =  window.mapApp.clearPins || this.clearPins;
         },
 
         /**
          * Генерирует разметку пина
          * @param {obj} item Объект объявления
-         * @param {num} i Порядковый номер объекта объявления
          */
-        generatePin: function (item, i) {
+        generatePin: function (item) {
             var pin = document.createElement('div');
             pin.innerHTML = '<img src="' + item.author.avatar + '" class="round" width="40" height="40">';
             pin.className = 'pin';
-            pin.dataset.offer = i;
+            pin.dataset.offer = item.offerIndex;
             pin.setAttribute('tabindex', 0);
             setTimeout(function () {
                 pin.style.left = (item.location.x - (pin.offsetWidth / 2)) + 'px';
@@ -27,13 +27,17 @@
             return pin;
         },
 
+        clearPins: function (wrap) {
+            wrap.innerHTML = '';
+        },
+
         /**
          * Вставляет пины на карту
          */
         renderPins: function (data, wrap) {
             var fragment = document.createDocumentFragment();
-            data.forEach(function (item, i) {
-                fragment.append(pinApp.generatePin(item, i));
+            data.forEach(function (item) {
+                fragment.append(pinApp.generatePin(item));
             });
             wrap.append(fragment);
         },

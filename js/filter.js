@@ -24,8 +24,8 @@
             if (cb !== undefined) {
                 cb();
             }
-            
-            mapApp.selector.pinsWrapper.innerHTML = '';
+
+            window.mapApp.clearPins(mapApp.selector.pinsWrapper);
             window.mapApp.renderPins(window.mapApp.filterAdds, mapApp.selector.pinsWrapper);
         });
     }

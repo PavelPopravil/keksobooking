@@ -32,11 +32,21 @@
         },
 
         /**
+         * Добавляет в данные порядковый номер объявления
+         */
+        addAddsIndex: function () {
+            dataApp.adds.forEach(function (item, i) {
+                item.offerIndex = i;
+            });
+        },
+
+        /**
          * Генерирует массив объявлений
          * @method createAdds
          */
         createAdds: function (data) {
             dataApp.adds = data;
+            dataApp.addAddsIndex();
             dataApp.exportToGlobal();
             window.mapApp.initForm();
             window.mapApp.initMap();
