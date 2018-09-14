@@ -6,38 +6,36 @@
     var housePrice = filters.querySelector('#housing_price');
     var houseRoomNum = filters.querySelector('#housing_room-number');
     var houseGuestNum = filters.querySelector('#housing_guests-number');
+    var selectList = filters.querySelectorAll('.tokyo__filter');
 
-    function filterBySelect(el, list, prop, cb) {
+    // function houseTypeFilter() {
+    //     if (houseType)
+    // }
 
-        el.addEventListener('change', function () {
-
-            window.mapApp.filterAdds = list.filter(function (item) {
-                if (el.value === 'any') {
-                    return true
-                } else {
-                    return el.value === item.offer[prop];
-                }
-            });
-
-            console.log(window.mapApp.filterAdds);
-
-            if (cb !== undefined) {
-                cb();
-            }
-
-            window.mapApp.clearPins(mapApp.selector.pinsWrapper);
-            window.mapApp.renderPins(window.mapApp.filterAdds, mapApp.selector.pinsWrapper);
+    function filterAllFields(offerItem) {
+        console.log(offerItem);
+        // console.log(selectList);
+        selectList.forEach(function (item) {
+            // console.log(item.value);
         });
+    }
+
+    function filterAdds(addsList) {
+        return addsList.filter(filterAllFields);
+    }
+
+    function debouncedUpdatePins() {
+        window.mapApp.clearPins(mapApp.selector.pinsWrapper);
+        window.mapApp.renderPins(filterAdds(window.mapApp.adds), mapApp.selector.pinsWrapper);
     }
 
     function initFilter() {
         if (!filters) {
             return false;
         }
-
-        filterBySelect(houseType, window.mapApp.filterAdds, 'type');
-        // filterBySelect(houseRoomNum, window.mapApp.filterAdds, 'rooms');
-        // filterBySelect(houseGuestNum, window.mapApp.filterAdds, 'guest');
+        filters.addEventListener('change', function () {
+            debouncedUpdatePins();
+        });
     }
 
     window.mapApp.initFilter = window.mapApp.initFilter || initFilter;
