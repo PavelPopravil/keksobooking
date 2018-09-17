@@ -8,15 +8,33 @@
     var houseGuestNum = filters.querySelector('#housing_guests-number');
     var selectList = filters.querySelectorAll('.tokyo__filter');
 
-    // function houseTypeFilter() {
-    //     if (houseType)
-    // }
+
+
+    var selectData = [
+        {
+            selector: houseType,
+            cb: function (data) {
+                return this.selector.value === 'any' ? true : this.selector.value === data.offer.type;
+            }
+        },
+        {
+            selector: houseRoomNum,
+            cb: function (data) {
+                return this.selector.value === 'any' ? true : parseInt(this.selector.value) === data.offer.rooms;
+            }
+        },
+        {
+            selector: houseGuestNum,
+            cb: function (data) {
+                return this.selector.value === 'any' ? true : parseInt(this.selector.value) === data.offer.guests;
+            }
+        }
+    ];
 
     function filterAllFields(offerItem) {
-        console.log(offerItem);
-        // console.log(selectList);
-        selectList.forEach(function (item) {
-            // console.log(item.value);
+
+        return selectData.every(function (item) {
+            return item.cb(offerItem);
         });
     }
 
