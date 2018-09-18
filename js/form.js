@@ -65,7 +65,7 @@
             });
         },
 
-        resetForm: function (e) {
+        resetForm: function () {
             this.reset();
         },
 
@@ -78,6 +78,33 @@
                 });
             });
             this.form.addEventListener('submit', app.resetForm);
+        },
+
+        changeAvatar: function (el, src) {
+            el.src = src;
+        },
+
+        readFile: function (file) {
+            var app = this;
+            var fr = new FileReader();
+
+            fr.addEventListener('load', function () {
+                if (this.readyState === 2) {
+                    app.changeAvatar(app.avatar, this.result);
+                }
+            });
+
+            fr.readAsDataURL(file);
+        },
+
+        initPhotoLoad: function () {
+            var app = this;
+            this.dropField = document.querySelector('.notice__photo .drop-zone input');
+            this.avatar = document.querySelector('.notice__preview img');
+
+            this.dropField.addEventListener('change', function () {
+                app.readFile(this.files[0]);
+            });
         },
 
         initCfg: function () {
@@ -101,6 +128,7 @@
             formApp.initCfg();
             formApp.setFormHandlers();
             formApp.fieldsDependencies();
+            formApp.initPhotoLoad();
             formApp.exportToGlobal();
         }
     };
